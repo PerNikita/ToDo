@@ -39,4 +39,4 @@ async function get() {
 });
 }
 
-addDataToFirestore();
+get();
