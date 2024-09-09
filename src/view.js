@@ -3,14 +3,34 @@ export function createView(selector) {
 
     return {
         node,
-        render: function(todos) {
-            let outputListHTML = '';
-
-            todos.forEach(function(todo) {
-                outputListHTML += `<li>${todo.title}</li>`
+        render: function (todos) {
+            todos.forEach((todo) => {
+                this.addTodo(todo);
             });
+        },
+        clear: function() {
+            this.node.innerHTML = '';
+        },
+        addTodo: function(todo) {
+            const div = document.createElement('div');
+            const input = document.createElement('input');
+            const label = document.createElement('label');
 
-            this.node.innerHTML = `<ul>${outputListHTML} </ul>`;
+            input.setAttribute('type', 'checkbox');
+            input.setAttribute('id', todo.id);
+
+            console.log(todo.id);
+
+            if (todo.done) {
+                input.setAttribute('checked', true);
+            }
+
+            label.innerText = todo.title,
+            label.setAttribute('for', todo.id);
+
+            div.append(input, label);
+
+            this.node.append(div);
         }
     }
 }

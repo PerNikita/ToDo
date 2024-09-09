@@ -3,13 +3,13 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import {
         collection,
-        addDoc,
         getDocs,
         writeBatch,
         doc,
         serverTimestamp,
         query,
-        orderBy
+        orderBy,
+        setDoc
     } from "firebase/firestore"; 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -54,12 +54,11 @@ export function createStorage(key) {
         push: async function(todo) {
 
             try {
-                const docRef = await addDoc(collection(this.db, this.key), {
+                await setDoc(doc(this.db, this.key, todo.id), {
                   title: todo.title,
-                  status: todo.status,
+                  done: todo.done,
                   createdAt: serverTimestamp()
                 });
-                console.log("Document written with ID: ", docRef.id);
               } catch (e) {
                 console.error("Error adding document: ", e);
               }

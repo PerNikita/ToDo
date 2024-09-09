@@ -19,14 +19,11 @@ storage.pull().then((todos) => {
 });
 
 btnNode.addEventListener('click', function() {
-    const todo = {
-        title: inputNode.value,
-        status: 'active'
+    const todo = model.create({ 
+        title: inputNode.value
+     });
 
-    };
-    model.add(todo);
-
-    view.render(model.get());
+    view.addTodo(todo);
 
     storage.push(todo);
 
@@ -37,5 +34,5 @@ btnClearNode.addEventListener('click', function() {
 
     model.clear();
 
-    view.render(model.get());
+    view.clear();
 })
