@@ -2,24 +2,38 @@ import { v4 as uuidv4 } from 'uuid';
 
 export function createTodosModel(todos) {
     return {
-        todos,
-        update: function(todos) {
-            this.todos = todos;
-        },
-        create: function({ title }) {
+        todosIds: [],
+        todosById: {},
+        addTodo: function({ title }) {
             const todo = {
                 title,
                 done: false,
                 id: uuidv4()
             }
-            this.todos.push(todo);
+            this.todosIds.push(todo.id);
+            this.todosById[todo.id] = todo;
+
             return todo;
         },
-        get: function() {
-            return this.todos;
+        setTodos: function(todos) {
+            this.todosIds = [];
+            this.todosById = {};
+            todos.forEach(todo => {
+                this.todosIds.push(todo.id);
+                this.todosById[todo.id] = todo;
+            })
         },
-        clear: function() {
-            this.todos = [];
+        getTodos: function() {
+            return {
+                todosById: this.todosById,
+                todosIds: this.todosIds
+            }
+        },
+        toggleTodo: function(id) {
+            this.todosById[id].done = !this.todosById[id].done
+        },
+        getTodo: function(id) {
+            return this.todosById[id];
         }
     };
 }

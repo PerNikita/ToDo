@@ -9,7 +9,8 @@ import {
         serverTimestamp,
         query,
         orderBy,
-        setDoc
+        setDoc,
+        updateDoc
     } from "firebase/firestore"; 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -38,7 +39,7 @@ export function createStorage(key) {
         pull: async function() {
 
             const ref = collection(this.db, this.key);
-            const q = query(ref, orderBy('createdAt', 'desc'));
+            const q = query(ref, orderBy('createdAt'));
 
             const querySnapshot = await getDocs(q);
             const todos = [];
@@ -46,7 +47,8 @@ export function createStorage(key) {
             querySnapshot.forEach((doc) => {
                 todos.push({
                     id: doc.id,
-                    title: doc.data().title
+                    title: doc.data().title,
+                    done: doc.data().done
                 })
             });
                 return todos;
@@ -63,15 +65,21 @@ export function createStorage(key) {
                 console.error("Error adding document: ", e);
               }
         },
-        delete: async function (todos) {
+        delete: async function ({ todosIds }) {
 
             const batch = writeBatch(this.db);
 
-            todos.forEach((todo) => {
-                const ref = doc(this.db, this.key, todo.id);
+            todosIds.forEach((id) => {
+                const ref = doc(this.db, this.key, id);
                 batch.delete(ref);
             });
             await batch.commit();
+        },
+        update: async function(todo) {
+            const ref = doc(db, this.key, todo.id);
+            await updateDoc(ref, {
+                done: todo.done
+            });
         }
     }
 }
